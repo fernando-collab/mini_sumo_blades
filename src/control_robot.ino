@@ -1,16 +1,14 @@
+/*
+Descripcion:Codigo para controlar un robot mini sumo mediante
+            el uso de los sensores "tcrt 5000" y "fc-51" y dos servos
+Desarrollador:Fernando sanchez 
+Github:fernando-collab
+*/
+
 //declaramos las librerias
 #include<Arduino.h>
 #include <Servo.h>
-
-//definicion de los pines
-#define s_izq 9   //tcrt 5000 sensor de linea
-#define s_drch 10 //tcrt 5000 sensor de linea
-#define s_at_izq 7//fc-51 sensor de ataque
-#define s_at_cnt 8   //fc-51 sensor de ataque
-#define s_at_drch 2  //fc-51 sensor de ataque
-#define boton 4
-#define motor_izq 6//servomotor mg90s
-#define motor_drch 5  //servomotor mg90s
+#include<control_robot.h>
 
 //definimos los servos
 Servo servo_drch;
@@ -18,6 +16,7 @@ Servo servo_izq;
 
 //declaramos variables
 boolean modo_combate = false;//el robot comienza parado
+int estado_boton = digitalRead(boton);  //lee el estado del boton
 //almacena estado de los sensores
 int estado_s_iqz;
 int estado_s_drch;
@@ -34,11 +33,9 @@ void setup() {
   pinMode(s_at_izq , INPUT);
   pinMode(s_at_cnt , INPUT);
   pinMode(s_at_drch , INPUT);
-
 	//configuramos los servos
   servo_izq.attach(motor_izq);
   servo_drch.attach(motor_drch);
-
 	//puerto serie 
  	Serial.begin(9600);
 
@@ -54,6 +51,11 @@ void loop() {
   {  
     parado();
   }else{
+
+
+    //modificar para integrar los menus de ataque!!!!!!
+
+
     if (estado_s_drch == LOW ||estado_s_iqz == LOW ){
       Serial.println("NEGRO");
       evasion();
@@ -66,13 +68,10 @@ void loop() {
       }  
     }
   }
-
 delay(50);
 }
 
 void leer_boton() {
- int estado_boton = digitalRead(boton);  //lee el estado del boton
-
   if (estado_boton == LOW) {
     modo_combate = !modo_combate; 
     delay(500); 
@@ -82,7 +81,6 @@ void leer_boton() {
     }
     if(modo_combate == false){
        Serial.println("ENTRANDO EN MODO REPOSO");
-
     }
   }
 }
@@ -133,7 +131,6 @@ void adelante() {
   servo_drch.write(180);
   servo_izq.write(0);
   delay(100);
-  //Serial.println("adelante");
 }
 
 void atras() {
@@ -154,3 +151,54 @@ void evasion() {
   atras();
   delay(100);
 } 
+
+void selector_menus(){
+  int valor;
+  if (estado_boton)
+  {
+    valor++;
+  }
+  switch (valor)
+  {
+  case 1 :
+    //menu 1
+    Serial.println(" se pulso el boton 1 vez");
+    menu_1();
+    break;
+ case 2 :
+    //menu 2
+    Serial.println(" se pulso el boton 2 vez");
+    menu_2();
+    break;
+  case 3 :
+    //menu 3
+    Serial.println(" se pulso el boton 3 vez");
+    menu_3();
+    break;
+  case 4 :
+    //menu 4
+    Serial.println(" se pulso el boton 4 vez");
+    menu_4();
+    break;
+  default:
+    Serial.println("no se pulso el boton");
+    parado();
+    break;
+  }
+}
+
+void menu_1(){
+  
+}
+
+void menu_2(){
+
+}
+
+void menu_3(){
+
+}
+
+void menu_4(){
+
+}
